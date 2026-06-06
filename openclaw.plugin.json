@@ -2,7 +2,7 @@
   "id": "concept-ledger",
   "name": "Concept Ledger",
   "kind": "plugin",
-  "version": "1.0.0",
+  "version": "1.0.2",
   "description": "Maintains a concept ledger that tracks term clarity across conversations. Automatically detects naming chaos, definition drift, metaphor overreach, and concept collisions. Helps concepts evolve from Vague to Frozen through natural conversation.",
   "author": "Concept Ledger Team",
   "configSchema": {
