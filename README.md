@@ -159,17 +159,17 @@ src/
 
 MIT
 
-## 安全声明
+## Security Statement
 
-本插件仅操作本地 JSON 文件（`~/.openclaw/concept-ledger/`），不上传任何数据到远程服务器，不执行网络请求，不调用 shell 命令，不读取环境变量。文件路径通过 `path.relative` 白名单严格校验，防止目录遍历攻击。
+This plugin operates entirely on local JSON files (`~/.openclaw/concept-ledger/`). It does not upload any data to remote servers, make network requests, execute shell commands, or read environment variables. File paths are strictly validated via `path.relative` whitelist to prevent directory traversal attacks.
 
-## 从 Skill 迁移
+## Migrating from the Skill
 
-如果你之前使用过 Concept Ledger Skill（纯文档版本），Plugin 版本提供：
+If you previously used the Concept Ledger Skill (pure document version), the Plugin version offers:
 
-- **真正的跨会话持久化**：Skill 版本每次会话从零开始；Plugin 版本自动保存和恢复概念状态
-- **自动检测信号**：Skill 版本依赖 LLM 自觉扫描对话内容；Plugin 版本在 Hook 中硬编码阈值自动执行
-- **状态机硬编码约束**：Skill 版本的状态转换可能被 LLM 忽略或绕过；Plugin 版本通过 TRANSITIONS 表强制校验，非法转换直接报错
-- **路径安全**：Plugin 版本对文件 I/O 进行白名单路径校验，Skill 版本无文件操作
+- **True cross-session persistence**: The Skill version starts from scratch each session; the Plugin version automatically saves and restores concept state
+- **Automatic signal detection**: The Skill version relies on the LLM to consciously scan conversations; the Plugin version executes detection with hardcoded thresholds in hooks
+- **Hardcoded state machine constraints**: The Skill version's state transitions could be ignored or bypassed by the LLM; the Plugin version enforces transitions via the TRANSITIONS table — invalid transitions throw errors
+- **Path safety**: The Plugin version enforces whitelist path validation on all file I/O; the Skill version has no file operations
 
-Skill 版本轻量、不依赖任何构建，适合快速试用的场景。Plugin 版本更强健，适合需要跨会话术语一致性的长期项目。
+The Skill version is lightweight, requires no build step, and suits quick experimentation. The Plugin version is more robust, ideal for long-term projects that need consistent terminology across sessions.
