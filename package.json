@@ -1,5 +1,5 @@
 {
-  "name": "concept-ledger",
+  "name": "concept-ledger-plugin",
   "version": "1.0.0",
   "description": "OpenClaw Plugin: Maintains a concept ledger that tracks term clarity, detects naming chaos, and helps concepts evolve from vague to implementable.",
   "main": "dist/index.js",
