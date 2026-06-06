@@ -1,0 +1,27 @@
+{
+  "id": "concept-ledger",
+  "name": "Concept Ledger",
+  "kind": "plugin",
+  "version": "1.0.0",
+  "description": "Maintains a concept ledger that tracks term clarity across conversations. Automatically detects naming chaos, definition drift, metaphor overreach, and concept collisions. Helps concepts evolve from Vague to Frozen through natural conversation.",
+  "author": "Concept Ledger Team",
+  "configSchema": {
+    "type": "object",
+    "properties": {
+      "projectId": {
+        "type": "string",
+        "description": "Optional project identifier for ledger isolation. Defaults to 'default' if not set."
+      },
+      "autoIntervene": {
+        "type": "boolean",
+        "description": "Whether the plugin should automatically intervene in the conversation when signals are detected. Defaults to true.",
+        "default": true
+      },
+      "synonymThreshold": {
+        "type": "number",
+        "description": "Jaro-Winkler similarity threshold for synonym detection. Defaults to 0.85.",
+        "default": 0.85
+      }
+    }
+  }
+}
