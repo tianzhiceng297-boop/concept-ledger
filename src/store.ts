@@ -1,7 +1,7 @@
 // ============================================================
-// Concept Ledger — Persistence Layer
+// Concept Forge — Persistence Layer
 // ============================================================
-// All file I/O is confined to ~/.openclaw/concept-ledger/
+// All file I/O is confined to ~/.openclaw/concept-forge/
 // No network, no shell, no env vars.
 // ============================================================
 
@@ -13,15 +13,16 @@ import type { LedgerData, Concept, PluginConfig } from './types';
 // ---- Constants ----
 
 const STORAGE_DIR = '.openclaw';
-const LEDGER_SUBDIR = 'concept-ledger';
+const LEDGER_SUBDIR = 'concept-forge';
+const LEGACY_LEDGER_SUBDIR = 'concept-ledger';
 const CURRENT_VERSION = 1;
-const PLUGIN_VERSION = '1.0.0';
+const PLUGIN_VERSION = '2.0.0';
 
 // ---- Path Utilities ----
 
 /**
- * Get the storage directory path: ~/.openclaw/concept-ledger/
- * Validates that the resulting path contains "concept-ledger" for safety.
+ * Get the storage directory path: ~/.openclaw/concept-forge/
+ * Validates that the resulting path contains "concept-forge" for safety.
  */
 function getStorageDir(): string {
   const home = os.homedir();
@@ -31,8 +32,8 @@ function getStorageDir(): string {
 }
 
 /**
- * Get the ledger file path: ~/.openclaw/concept-ledger/{projectId}.json
- * Validates that the resulting path contains "concept-ledger" for safety.
+ * Get the ledger file path: ~/.openclaw/concept-forge/{projectId}.json
+ * Validates that the resulting path contains "concept-forge" for safety.
  */
 function getLedgerPath(projectId: string): string {
   // Sanitize projectId to prevent directory traversal
@@ -63,9 +64,9 @@ function allowedBase(): string {
 }
 
 /**
- * Validate that a path is within the concept-ledger storage directory.
+ * Validate that a path is within the concept-forge storage directory.
  * Uses path.resolve + path.relative — immune to substring-based
- * bypasses like /evil/concept-ledger-backdoor/.
+ * bypasses like /evil/concept-forge-backdoor/.
  * Throws if the resolved path is not under the allowed base.
  */
 function validatePath(filePath: string): void {
@@ -100,6 +101,34 @@ export function ensureStorageDir(): void {
 }
 
 /**
+ * Attempt to migrate data from the legacy concept-ledger/ path.
+ * Returns the parsed LedgerData if migration succeeded, or null.
+ */
+function tryMigrateLegacyData(projectId: string): LedgerData | null {
+  try {
+    const home = os.homedir();
+    const legacyDir = path.join(home, STORAGE_DIR, LEGACY_LEDGER_SUBDIR);
+    const legacyPath = path.join(legacyDir, `${projectId}.json`);
+
+    if (!fs.existsSync(legacyPath)) return null;
+
+    const raw = fs.readFileSync(legacyPath, 'utf-8');
+    const data = JSON.parse(raw) as LedgerData;
+
+    if (!data.version || !data.concepts || !data.order) return null;
+
+    // Migrate schema if needed
+    if (data.version < CURRENT_VERSION) {
+      return migrate(data);
+    }
+
+    return data;
+  } catch {
+    return null;
+  }
+}
+
+/**
  * Create an empty ledger for a project.
  */
 export function createEmptyLedger(projectId: string, sessionId: string): LedgerData {
@@ -129,6 +158,16 @@ export function loadLedger(projectId: string, sessionId: string): LedgerData {
   const safeProjectId = sanitizeProjectId(projectId);
 
   if (!fs.existsSync(filePath)) {
+    // Try migrating from legacy concept-ledger/ path (v1.x → v2.0.0)
+    const migrated = tryMigrateLegacyData(safeProjectId);
+    if (migrated) {
+      migrated.sessionId = sessionId;
+      migrated.metadata.updatedAt = new Date().toISOString();
+      migrated.metadata.pluginVersion = PLUGIN_VERSION;
+      saveLedger(migrated);
+      return migrated;
+    }
+
     const empty = createEmptyLedger(safeProjectId, sessionId);
     writeLedgerSync(empty); // seed the file
     return empty;
@@ -262,7 +301,7 @@ export function conceptIdFromName(name: string): string {
 }
 
 /**
- * Check if a path is safe (under concept-ledger directory).
+ * Check if a path is safe (under concept-forge directory).
  */
 export function isPathSafe(filePath: string): boolean {
   try {

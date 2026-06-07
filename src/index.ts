@@ -1,5 +1,5 @@
 // ============================================================
-// Concept Ledger — Plugin Entry Point
+// Concept Forge — Plugin Entry Point
 // ============================================================
 // register(api) is the single OpenClaw Plugin SDK entry.
 // Hooks: session_start, after_response, session_end
@@ -40,7 +40,7 @@ let currentSessionId = '';
 export function register(api: OpenClawPluginApi): void {
   const log = api.logger;
 
-  log.info('[ConceptLedger] Plugin registered');
+  log.info('[ConceptForge] Plugin registered');
 
   // ---- Hook: session_start ----
   api.on('session_start', async (context) => {
@@ -49,7 +49,7 @@ export function register(api: OpenClawPluginApi): void {
       currentProjectId = projectId;
       currentSessionId = context.session.id;
 
-      log.info(`[ConceptLedger] session_start — projectId=${projectId}, sessionId=${currentSessionId}`);
+      log.info(`[ConceptForge] session_start — projectId=${projectId}, sessionId=${currentSessionId}`);
 
       // Load existing ledger
       ledger = loadLedger(projectId, currentSessionId);
@@ -60,11 +60,11 @@ export function register(api: OpenClawPluginApi): void {
       // Format system prompt augmentation with existing concepts
       const promptAugmentation = buildSessionStartPrompt(ledger);
 
-      log.info(`[ConceptLedger] Loaded ledger with ${ledger.order.length} concepts`);
+      log.info(`[ConceptForge] Loaded ledger with ${ledger.order.length} concepts`);
 
       return promptAugmentation;
     } catch (err) {
-      log.error('[ConceptLedger] Error in session_start hook:', err);
+      log.error('[ConceptForge] Error in session_start hook:', err);
       return '';
     }
   });
@@ -73,7 +73,7 @@ export function register(api: OpenClawPluginApi): void {
   api.on('after_response', async (context) => {
     try {
       if (!ledger) {
-        log.warn('[ConceptLedger] No ledger loaded — skipping after_response');
+        log.warn('[ConceptForge] No ledger loaded — skipping after_response');
         return;
       }
 
@@ -125,12 +125,12 @@ export function register(api: OpenClawPluginApi): void {
       }
 
       log.info(
-        `[ConceptLedger] after_response — ${mentions.length} mentions, ${gestures.length} gestures, ${signals.length} signals`
+        `[ConceptForge] after_response — ${mentions.length} mentions, ${gestures.length} gestures, ${signals.length} signals`
       );
 
       return interventionText || undefined;
     } catch (err) {
-      api.logger.error('[ConceptLedger] Error in after_response hook:', err);
+      api.logger.error('[ConceptForge] Error in after_response hook:', err);
       return;
     }
   });
@@ -139,7 +139,7 @@ export function register(api: OpenClawPluginApi): void {
   api.on('session_end', async (context) => {
     try {
       if (!ledger) {
-        log.warn('[ConceptLedger] No ledger loaded — skipping session_end');
+        log.warn('[ConceptForge] No ledger loaded — skipping session_end');
         return;
       }
 
@@ -150,11 +150,11 @@ export function register(api: OpenClawPluginApi): void {
       // Format inventory
       const inventory = formatInventory(ledger);
 
-      log.info(`[ConceptLedger] session_end — saved ledger with ${ledger.order.length} concepts`);
+      log.info(`[ConceptForge] session_end — saved ledger with ${ledger.order.length} concepts`);
 
       return '\n\n' + inventory;
     } catch (err) {
-      log.error('[ConceptLedger] Error in session_end hook:', err);
+      log.error('[ConceptForge] Error in session_end hook:', err);
       return '';
     }
   });
@@ -178,7 +178,7 @@ function buildSessionStartPrompt(ledger: LedgerData): string {
   const lines: string[] = [
     '',
     '---',
-    '[Concept Ledger] Previously tracked concepts:',
+    '[Concept Forge] Previously tracked concepts:',
   ];
 
   for (const c of nonVague) {
@@ -209,51 +209,51 @@ function applyGestures(
         case 'lock': {
           const result = freeze(ledger, gesture.conceptName, gesture.definition, ledger.turnCount, sessionId);
           if (result.success) {
-            log.info(`[ConceptLedger] Locked: "${gesture.conceptName}" = "${gesture.definition}"`);
+            log.info(`[ConceptForge] Locked: "${gesture.conceptName}" = "${gesture.definition}"`);
           } else {
-            log.warn(`[ConceptLedger] Lock failed: ${result.error}`);
+            log.warn(`[ConceptForge] Lock failed: ${result.error}`);
           }
           break;
         }
         case 'merge': {
           const result = merge(ledger, gesture.conceptA, gesture.conceptB, ledger.turnCount, sessionId);
           if (result.success) {
-            log.info(`[ConceptLedger] Merged: "${gesture.conceptA}" ← "${result.absorbed}"`);
+            log.info(`[ConceptForge] Merged: "${gesture.conceptA}" ← "${result.absorbed}"`);
           } else {
-            log.warn(`[ConceptLedger] Merge failed: ${result.error}`);
+            log.warn(`[ConceptForge] Merge failed: ${result.error}`);
           }
           break;
         }
         case 'discard': {
           const result = discard(ledger, gesture.conceptName);
           if (result.success) {
-            log.info(`[ConceptLedger] Discarded: "${result.removed}"`);
+            log.info(`[ConceptForge] Discarded: "${result.removed}"`);
           } else {
-            log.warn(`[ConceptLedger] Discard failed: ${result.error}`);
+            log.warn(`[ConceptForge] Discard failed: ${result.error}`);
           }
           break;
         }
         case 'metaphorOnly': {
           const result = markMetaphorOnly(ledger, gesture.conceptName, ledger.turnCount, sessionId);
           if (result.success) {
-            log.info(`[ConceptLedger] Marked MetaphorOnly: "${gesture.conceptName}"`);
+            log.info(`[ConceptForge] Marked MetaphorOnly: "${gesture.conceptName}"`);
           } else {
-            log.warn(`[ConceptLedger] MetaphorOnly failed: ${result.error}`);
+            log.warn(`[ConceptForge] MetaphorOnly failed: ${result.error}`);
           }
           break;
         }
         case 'unfreeze': {
           const result = unfreeze(ledger, gesture.conceptName, ledger.turnCount, sessionId);
           if (result.success) {
-            log.info(`[ConceptLedger] Unfroze: "${gesture.conceptName}"`);
+            log.info(`[ConceptForge] Unfroze: "${gesture.conceptName}"`);
           } else {
-            log.warn(`[ConceptLedger] Unfreeze failed: ${result.error}`);
+            log.warn(`[ConceptForge] Unfreeze failed: ${result.error}`);
           }
           break;
         }
       }
     } catch (err) {
-      log.error(`[ConceptLedger] Error applying gesture:`, err);
+      log.error(`[ConceptForge] Error applying gesture:`, err);
     }
   }
 }
@@ -295,7 +295,7 @@ function applyStateIntents(
         }
       }
     } catch (err) {
-      log.error(`[ConceptLedger] Error applying state intent:`, err);
+      log.error(`[ConceptForge] Error applying state intent:`, err);
     }
   }
 }
@@ -323,7 +323,7 @@ function processMentions(
           const result = transition(concept, 'forming', ledger.turnCount, sessionId);
           if (result.success) {
             concept = result.concept;
-            log.info(`[ConceptLedger] Auto-upgraded "${concept.name}": Vague → Forming`);
+            log.info(`[ConceptForge] Auto-upgraded "${concept.name}": Vague → Forming`);
           }
         }
 
@@ -336,7 +336,7 @@ function processMentions(
         if (targetConcept) {
           const updated = addAlias(targetConcept, mention.name);
           ledger.concepts[targetConcept.id] = updated;
-          log.info(`[ConceptLedger] Added alias "${mention.name}" → "${targetConcept.name}"`);
+          log.info(`[ConceptForge] Added alias "${mention.name}" → "${targetConcept.name}"`);
         }
       }
 
@@ -345,7 +345,7 @@ function processMentions(
         ledger.concepts[concept.id] = concept;
       }
     } catch (err) {
-      log.error(`[ConceptLedger] Error processing mention "${mention.name}":`, err);
+      log.error(`[ConceptForge] Error processing mention "${mention.name}":`, err);
     }
   }
 }
@@ -359,13 +359,13 @@ function formatInterventions(signals: DetectionSignal[]): string {
   const blocks = signals
     .filter((s) => s.severity !== 'block') // Block signals should not be auto-sent; they need user confirmation
     .map((s) => {
-      return `[Concept Ledger] ${s.message} ${s.suggestedAction}`;
+      return `[Concept Forge] ${s.message} ${s.suggestedAction}`;
     });
 
   // Only include block signals if they are standalone and need immediate attention
   const blockSignals = signals.filter((s) => s.severity === 'block');
   for (const s of blockSignals) {
-    blocks.push(`[Concept Ledger] ⚠️ ${s.message} ${s.suggestedAction}`);
+    blocks.push(`[Concept Forge] ⚠️ ${s.message} ${s.suggestedAction}`);
   }
 
   return blocks.length > 0 ? '\n\n' + blocks.join('\n\n') : '';

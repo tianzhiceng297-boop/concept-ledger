@@ -1,5 +1,5 @@
 // ============================================================
-// Concept Ledger — Type Definitions
+// Concept Forge — Type Definitions
 // ============================================================
 
 /** The six concept maturity states */

@@ -1,5 +1,16 @@
 # Changelog
 
+## 2.0.0 — Brand Rebirth: Concept Ledger → Concept Forge (2026-06-08)
+
+### Changed
+- **Name**: `concept-ledger` → `concept-forge` (package, manifest, all internal references)
+- **Storage path**: `~/.openclaw/concept-ledger/` → `~/.openclaw/concept-forge/` (existing data auto-migrated on first load)
+- **Description**: rewritten with scenario-based positioning — client jargon decoding, brainstorming capture, team alignment
+- **README**: complete rewrite — pain-point-first, 3 scenario cards, technical details folded below
+
+### Added
+- **Legacy data migration**: `loadLedger()` now checks old `concept-ledger/` directory and copies files to `concept-forge/` if new path is empty
+
 ## 1.0.1 (2026-06-07)
 
 ### Fixed
@@ -7,10 +18,10 @@
 
 ## 1.0.0 — Initial Plugin Release (2026-06-07)
 
-First formal release of Concept Ledger, migrating from a pure Markdown Skill to an OpenClaw Plugin.
+First formal release, migrating from a pure Markdown Skill to an OpenClaw Plugin.
 
 ### Added
-- **Cross-session persistence**: Concept ledger automatically saved to `~/.openclaw/concept-ledger/{projectId}.json`; Clear/Forming/Frozen concepts auto-restored next session
+- **Cross-session persistence**: ledger automatically saved to `~/.openclaw/concept-ledger/{projectId}.json`; Clear/Forming/Frozen concepts auto-restored next session
 - **5 auto-detection signals**:
   - Synonym Loop — triggered when a concept accumulates 3+ alternative names; suggests unification
   - Definition Drift — alerts when Forming/Clear concept definition shifts > 50% keyword overlap

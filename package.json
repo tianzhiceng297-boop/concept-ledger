@@ -1,7 +1,7 @@
 {
-  "name": "concept-ledger-plugin",
-  "version": "1.0.2",
-  "description": "OpenClaw Plugin: Maintains a concept ledger that tracks term clarity, detects naming chaos, and helps concepts evolve from vague to implementable.",
+  "name": "concept-forge",
+  "version": "2.0.0",
+  "description": "Turn vague client ideas & chaotic brainstorming into crystal-clear specs. Captures metaphors, decodes fuzzy requirements, auto-builds a shared terminology dictionary — forge raw thoughts into implementable concepts.",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "files": [
@@ -25,9 +25,13 @@
   "keywords": [
     "openclaw",
     "plugin",
-    "concept-ledger",
+    "concept-forge",
     "terminology",
-    "knowledge-management"
+    "brainstorming",
+    "requirements",
+    "clarification",
+    "specification",
+    "client-communication"
   ],
   "license": "MIT",
   "devDependencies": {

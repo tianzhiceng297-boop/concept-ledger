@@ -1,96 +1,86 @@
-# Concept Ledger — OpenClaw Plugin
+# Concept Forge — Turn Vague Ideas into Crystal-Clear Specs
 
-A living glossary that tracks concept maturity in your conversations. The plugin automatically detects naming chaos, intervenes at the right moment, and helps concepts evolve from vague to implementable — all without manual commands.
+> *"What the client actually meant" — turbocharged.*
+
+Your client says *"make it more intelligent"*, your team throws around metaphors like *"a data sieve"*, *"the green channel"*, and *"breathing room"* — and three weeks later nobody agrees on what anything means.
+
+**Concept Forge** catches this chaos in real time. It captures metaphors and jargon from conversations, decodes fuzzy requirements, detects naming collisions and definition drift, and auto-builds a shared terminology dictionary your whole team can rely on.
+
+## 🔥 Three Scenarios, One Plugin
+
+### 🤯 Brainstorming Without Losing the Thread
+
+Your team dumps 20 metaphors, 5 competing names for the same thing, and a dozen half-baked ideas into a session. The plugin:
+
+- **Auto-captures** every concept mentioned — PascalCase terms, quoted phrases, Chinese and English alike
+- **Detects synonym loops** — when 3+ different names refer to the same concept, it pauses and asks: *"Which one do we mean?"*
+- **Tracks concept maturity** through a 6-state forge: `Vague → Forming → Clear → Frozen`
+
+### 🗣️ Decoding "Client-Speak"
+
+The client says *"The system should feel more premium"* or *"We need a smart recommendation engine."* The plugin:
+
+- **Flags Vague concepts** that stay undefined for too long (10+ turns)
+- **Blocks metaphor overreach** — if someone starts coding `class PremiumFeeling`, the plugin raises a red flag: *"Define this first."*
+- **Detects definition drift** — when the same term subtly shifts meaning across the conversation: *"Is this a deepening, or two different things?"*
+
+### 📖 Team Alignment: Single Source of Truth
+
+- Every concept gets a **canonical name** and a **versioned definition history**
+- At session end, a **concept inventory** is auto-generated — everyone sees what's frozen, what's forming, and what's still vague
+- Concepts persist **across sessions** — pick up exactly where you left off last week
+
+## ⚙️ The 6-State Forge
+
+```
+VAGUE ──(definition given)──→ FORMING ──(boundaries clear)──→ CLEAR ──(confirmed)──→ FROZEN ──(unreferenced)──→ ZOMBIE
+  │                               │                            │                          │
+  │ user tags                     │ downgrade                  │ redefinition needed      │ unfreeze
+  ▼                               ▼                            ▼                          ▼
+METAPHOR ONLY                  VAGUE                        FORMING                    CLEAR
+```
+
+| Status | What It Means | How It Gets There |
+|--------|--------------|-------------------|
+| **Vague** | Metaphor or intuition; can't be described without figurative language | Default entry point |
+| **Forming** | Has a provisional definition; logic can be articulated | Definition is provided |
+| **Clear** | Can be described independently and without ambiguity | Definition used consistently |
+| **Frozen** | Locked in; ready for implementation or documentation | User confirms |
+| **Metaphor Only** | Explicitly a figure of speech — never to be resolved | User tags it |
+| **Zombie** | Frozen but unreferenced in 5+ sessions | Auto-detected |
+
+## 🛡️ 5 Auto-Detection Signals
+
+| Signal | What It Catches | Severity |
+|--------|----------------|----------|
+| **Synonym Loop** | 3+ names for the same thing (e.g., DataFunnel, DataSieve, EventStrainer) | ⚠️ Warn |
+| **Definition Drift** | Same word, shifting meaning across turns | ⚠️ Warn |
+| **Metaphor Overreach** | Vague concept appears in code/interface descriptions | 🚫 Block |
+| **Concept Collision** | Two different names with near-identical definitions | ℹ️ Info |
+| **Zombie Concept** | Frozen concept untouched for 5+ sessions | ℹ️ Info |
 
 ## Installation
 
 ```bash
-npm install concept-ledger
+npm install concept-forge
 ```
 
 Or build from source:
 
 ```bash
-git clone <repo-url>
-cd concept-ledger-plugin
+git clone https://github.com/tianzhiceng297-boop/concept-forge.git
+cd concept-forge
 npm install
 npm run build
+npm test
 ```
 
 Add to your OpenClaw configuration:
 
 ```json
 {
-  "plugins": ["concept-ledger"]
+  "plugins": ["concept-forge"]
 }
-```
-
-## How It Works
-
-The plugin maintains a **Concept Ledger** — a background knowledge graph of every term in your conversation. It tracks each concept through a 6-state lifecycle:
-
-### State Machine
-
-```
-┌─────────┐    definition given     ┌─────────┐    boundaries stable    ┌───────┐    implementation confirmed    ┌────────┐
-│  VAGUE  │ ──────────────────────→ │ FORMING │ ──────────────────────→ │ CLEAR │ ────────────────────────────→ │ FROZEN │
-│         │                         │         │                         │       │                                 │        │
-│ metaphor│ ←──────── downgrade ────│         │ ←── definition wrong ───│       │ ←────────── unfreeze ──────────│        │
-│ /intuit │                         │         │                         │       │                                 │        │
-└────┬────┘                         └─────────┘                         └───────┘                                 └───┬────┘
-     │                                                                                                              │
-     │ user tags                                                                                                     │ unreferenced
-     ▼                                                                                                              ▼
-┌──────────────┐                                                                                              ┌────────┐
-│ METAPHOR     │                                                                                              │ ZOMBIE │
-│ ONLY         │  (never upgrades)                                                                            │        │
-└──────────────┘                                                                                              └────────┘
-```
-
-### Statuses
-
-| Status | Meaning | How to Enter |
-|--------|---------|--------------|
-| **Vague** | Metaphor or intuition; cannot be described without figurative language | Default entry for new concepts |
-| **Forming** | Has a provisional definition; general logic can be articulated | Definition is provided by user or agent |
-| **Clear** | Can be described independently and without ambiguity; boundaries explicit | Definition is stable and used consistently |
-| **Frozen** | Entered implementation path; has an interface or data structure | User confirms or code appears |
-| **Metaphor Only** | Explicitly declared as a figure of speech; never to be resolved | User tags it |
-| **Zombie** | Frozen but no longer referenced in recent sessions | Auto-detected by scanner |
-
-## Auto-Detection
-
-The plugin continuously scans conversations for these signals:
-
-| Signal | Trigger | Behavior |
-|--------|---------|----------|
-| **Synonym Loop** | 3+ alternative names for the same concept | Pauses and suggests unification |
-| **Definition Drift** | Meaning of a Forming/Clear concept shifts significantly | Alerts: upgrade or redefinition? |
-| **Metaphor Overreach** | Vague concept tied to implementation details | Blocks: define clearly first |
-| **Concept Collision** | Two concepts are logically equivalent | Suggests merging |
-| **Zombie Concept** | Frozen concept unreferenced in 5+ sessions | Marks as Zombie, suggests review |
-
-## User Gestures
-
-| Gesture | Effect |
-|---------|--------|
-| `Lock [Concept] = [Definition]` | Freeze directly with final definition |
-| `Merge [A], [B]` | Merge B into A; A inherits all associations |
-| `Discard [Concept]` | Remove from ledger entirely |
-| `Metaphor only [Concept]` | Mark as Metaphor Only; plugin stops pushing for upgrade |
-| `Unfreeze [Concept]` | Frozen → Clear; allow modification |
-
-## Session Wrap-Up
-
-At the end of each session, the plugin embeds a concept inventory:
-
-```
-Concept inventory for this session:
-  Frozen (2)   Data Funnel, Event Pipeline — ready for implementation
-  Clear  (1)   Message Decay — suggest freezing after confirming interface
-  Forming (2)  Perception Gateway, Sentiment Probe — continue refining
-  Vague  (1)   Green Channel — suggest discarding or redefining
-  Zombie (0)   None
 ```
 
 ## Configuration
@@ -105,39 +95,31 @@ Concept inventory for this session:
 
 | Option | Type | Default | Description |
 |--------|------|---------|-------------|
-| `projectId` | string | `"default"` | Isolate ledgers by project |
-| `autoIntervene` | boolean | `true` | Whether to automatically intervene when signals are detected |
+| `projectId` | string | `"default"` | Isolate forge data by project |
+| `autoIntervene` | boolean | `true` | Auto-intervene when signals are detected |
 | `synonymThreshold` | number | `0.85` | Jaro-Winkler similarity threshold for synonym detection |
 
-## Storage
+---
+## Technical Details
 
-All data is stored in **local JSON files** at:
+### Storage
 
-```
-~/.openclaw/concept-ledger/{projectId}.json
-```
+All data lives in **local JSON files** at `~/.openclaw/concept-forge/{projectId}.json`.
 
-- Data is written atomically (temp file → rename) to prevent corruption
+- Atomic writes (temp file → rename) prevent corruption
 - Automatic schema migration on version upgrades
-- Path safety validation prevents directory traversal
+- Whitelist path validation prevents directory traversal
+- **v1.x users**: ledger files from `~/.openclaw/concept-ledger/` are auto-migrated on first load
 
-## Disclaimer
+### User Gestures
 
-**This plugin operates entirely locally.** It reads and writes only JSON files in the `~/.openclaw/concept-ledger/` directory. It does not:
-
-- Make any network requests
-- Execute shell commands
-- Read environment variables
-- Upload any data to external services
-- Access files outside the `concept-ledger` storage directory
-
-## Development
-
-```bash
-npm install
-npm run build
-npm test
-```
+| Gesture | Effect |
+|---------|--------|
+| `Lock [Concept] = [Definition]` | Freeze directly with final definition |
+| `Merge [A], [B]` | Merge B into A |
+| `Discard [Concept]` | Remove from ledger entirely |
+| `Metaphor only [Concept]` | Mark as Metaphor Only — stop pushing for upgrade |
+| `Unfreeze [Concept]` | Frozen → Clear; open for modification |
 
 ### Project Structure
 
@@ -145,31 +127,24 @@ npm test
 src/
 ├── index.ts       # Plugin entry: register(api), lifecycle hooks
 ├── ledger.ts      # State machine engine, transitions, commands
-├── scanner.ts     # Term scanner: 5 detection signals
+├── scanner.ts     # 5 detection signals + Jaro-Winkler/CJK bigram engines
 ├── parser.ts      # LLM response parser: concepts, definitions, gestures
-├── store.ts       # JSON persistence with atomic writes
+├── store.ts       # JSON persistence with atomic writes + legacy migration
 ├── types.ts       # All type definitions
-└── __tests__/     # Test files
-    ├── ledger.test.ts
-    ├── scanner.test.ts
-    └── store.test.ts
+└── __tests__/     # 47 test cases
 ```
+
+### Security
+
+This plugin operates **entirely locally**. It does not:
+- Make network requests
+- Execute shell commands
+- Read environment variables
+- Upload data to external services
+- Access files outside `~/.openclaw/concept-forge/`
+
+File I/O is confined via `path.relative` whitelist validation — directory traversal attacks are blocked at the boundary.
 
 ## License
 
 MIT
-
-## Security Statement
-
-This plugin operates entirely on local JSON files (`~/.openclaw/concept-ledger/`). It does not upload any data to remote servers, make network requests, execute shell commands, or read environment variables. File paths are strictly validated via `path.relative` whitelist to prevent directory traversal attacks.
-
-## Migrating from the Skill
-
-If you previously used the Concept Ledger Skill (pure document version), the Plugin version offers:
-
-- **True cross-session persistence**: The Skill version starts from scratch each session; the Plugin version automatically saves and restores concept state
-- **Automatic signal detection**: The Skill version relies on the LLM to consciously scan conversations; the Plugin version executes detection with hardcoded thresholds in hooks
-- **Hardcoded state machine constraints**: The Skill version's state transitions could be ignored or bypassed by the LLM; the Plugin version enforces transitions via the TRANSITIONS table — invalid transitions throw errors
-- **Path safety**: The Plugin version enforces whitelist path validation on all file I/O; the Skill version has no file operations
-
-The Skill version is lightweight, requires no build step, and suits quick experimentation. The Plugin version is more robust, ideal for long-term projects that need consistent terminology across sessions.

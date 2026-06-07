@@ -1,5 +1,5 @@
 // ============================================================
-// Concept Ledger — Store Tests
+// Concept Forge — Store Tests
 // ============================================================
 
 import * as fs from 'fs';
@@ -14,13 +14,13 @@ import {
   isPathSafe,
 } from '../store';
 
-const TEST_PROJECT = '__test_concept_ledger';
+const TEST_PROJECT = '__test_concept_forge';
 const TEST_SESSION = 'test-session-1';
 
 // Get a temp directory for testing
 function getTestFilePath(): string {
   const home = os.homedir();
-  return path.join(home, '.openclaw', 'concept-ledger', `${TEST_PROJECT}.json`);
+  return path.join(home, '.openclaw', 'concept-forge', `${TEST_PROJECT}.json`);
 }
 
 describe('Store — JSON Persistence', () => {
@@ -42,7 +42,7 @@ describe('Store — JSON Persistence', () => {
     expect(ledger.turnCount).toBe(0);
     expect(ledger.sessionId).toBe(TEST_SESSION);
     expect(ledger.previousSessionIds).toEqual([]);
-    expect(ledger.metadata.pluginVersion).toBe('1.0.0');
+    expect(ledger.metadata.pluginVersion).toBe('2.0.0');
   });
 
   test('loadLedger creates a new ledger if none exists', () => {
@@ -120,13 +120,13 @@ describe('Store — JSON Persistence', () => {
 });
 
 describe('Path Safety', () => {
-  test('isPathSafe validates concept-ledger paths', () => {
+  test('isPathSafe validates concept-forge paths', () => {
     const home = os.homedir();
-    const safePath = path.join(home, '.openclaw', 'concept-ledger', 'test.json');
+    const safePath = path.join(home, '.openclaw', 'concept-forge', 'test.json');
     expect(isPathSafe(safePath)).toBe(true);
   });
 
-  test('isPathSafe rejects paths outside concept-ledger', () => {
+  test('isPathSafe rejects paths outside concept-forge', () => {
     expect(isPathSafe('/etc/passwd')).toBe(false);
     expect(isPathSafe('/tmp/test.json')).toBe(false);
     expect(isPathSafe('../outside.json')).toBe(false);

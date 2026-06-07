@@ -1,5 +1,5 @@
 // ============================================================
-// Concept Ledger — Content Parser
+// Concept Forge — Content Parser
 // ============================================================
 // Extracts concept names, definitions, user gestures, and
 // state-change intents from LLM response text.

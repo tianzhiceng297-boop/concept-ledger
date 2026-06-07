@@ -36,7 +36,7 @@ clawhub whoami
 ### 4. 进入项目目录
 
 ```bash
-cd /path/to/concept-ledger-plugin
+cd /path/to/concept-forge
 ```
 
 ### 5. 最终构建与测试
@@ -54,7 +54,7 @@ npm pack --dry-run
 ### 6. 预检发布（关键）
 
 ```bash
-clawhub package publish . --family code-plugin --version 1.0.0 --dry-run
+clawhub package publish . --family code-plugin --version 2.0.0 --dry-run
 ```
 
 - 预期：`✓ Package validated`
@@ -82,7 +82,7 @@ clawhub package publish . --family code-plugin --version 1.0.0
 | `manifest.id format invalid` | ID 含大写或特殊字符 | 改 `openclaw.plugin.json` 的 `id` 为小写连字符 |
 | `package.json missing openclaw.build` | 字段缺失 | 确认 `openclaw.build.openclawVersion` = `"2026.3.24-beta.2"` |
 | `pluginApi version mismatch` | compat 版本不匹配 | 确认 `openclaw.compat.pluginApi` = `"1.0.0"` |
-| `Path validation failed` | store.ts 路径校验触发 | 路径白名单限制在 `~/.openclaw/concept-ledger/`，不要修改 |
+| `Path validation failed` | store.ts 路径校验触发 | 路径白名单限制在 `~/.openclaw/concept-forge/`，不要修改 |
 
 ## 审核通过后
 
@@ -95,5 +95,5 @@ clawhub package publish . --family code-plugin --version 1.0.0
 如果需要下架当前版本：
 
 ```bash
-clawhub package unpublish concept-ledger --version 1.0.0
+clawhub package unpublish concept-forge --version 2.0.0
 ```

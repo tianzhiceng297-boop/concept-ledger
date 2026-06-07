@@ -1,5 +1,5 @@
 // ============================================================
-// Concept Ledger — Term Scanner
+// Concept Forge — Term Scanner
 // ============================================================
 // Detects the five core signals:
 // 1. Synonym Loop    — 3rd alias triggers unification prompt

@@ -1,5 +1,5 @@
 // ============================================================
-// Concept Ledger — State Machine Engine
+// Concept Forge — State Machine Engine
 // ============================================================
 // Implements the 6-state concept lifecycle:
 // Vague → Forming → Clear → Frozen
