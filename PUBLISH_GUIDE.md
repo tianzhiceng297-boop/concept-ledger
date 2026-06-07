@@ -49,7 +49,7 @@ npm pack --dry-run
 ```
 
 - 确认：`47/47` 测试通过
-- 确认：`27 files, ~141 kB`
+- 确认：`27 files, ~143 kB`
 
 ### 6. 预检发布（关键）
 
@@ -63,7 +63,7 @@ clawhub package publish . --family code-plugin --version 2.0.0 --dry-run
 ### 7. 正式发布
 
 ```bash
-clawhub package publish . --family code-plugin --version 1.0.0
+clawhub package publish . --family code-plugin --version 2.0.0
 ```
 
 - 成功后会在 dashboard 生成 Plugin 卡片
